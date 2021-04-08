@@ -72,7 +72,7 @@ function procuraCasaPorFreguesia(freguesia) {
 async function getAll() {
     for (let i = 0; i < freguesias.length; i++) {
         procuraCasaPorFreguesia(freguesias[i]);
-        if (i % 5) {
+        if (i % 2) {
             await delay(1000);
         }
     }

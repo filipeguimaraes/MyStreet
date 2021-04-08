@@ -1,0 +1,15 @@
+{
+  "name": "tub_poi",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "run": "node index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "csv-parser": "^3.0.0"
+  }
+}
