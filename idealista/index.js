@@ -1,5 +1,6 @@
 const getID = require("./getID");
 const getPropriedades = require("./getPropriedades");
+const fs = require('fs');
 
 let distrito = "Braga";
 
@@ -72,11 +73,19 @@ function procuraCasaPorFreguesia(freguesia) {
             }
         }
 
+        let dir = "cache/"+freguesia;
+
+        if (!fs.existsSync(dir)){
+            fs.mkdirSync(dir);
+        }
+
+
         const nome = response.locations[i].name;
         const id = response.locations[i].locationId;
-        //console.log("Nome: " + nome + " || ID: " + id + " || ");
 
         getPropriedades(id, nome).then((data) => {
+            let dados = JSON.stringify(data);
+            fs.writeFileSync(dir+'/proprieties.json', dados);
             console.log("Nome: " + nome + " || ID: " + id + " || Casas: " + data.total);
         })
 
