@@ -1,104 +1,48 @@
-const getID = require("./getID");
-const getPropriedades = require("./getPropriedades");
+const procuraCasaPorFreguesia = require("./getByFreguesia");
 const fs = require('fs');
 
-let distrito = "Braga";
-
-const freguesias = [
-    "Abação e Gémeos",
-    "Airão e Vermil",
-    "Aldão",
-    "Arosa e Castelões",
-    "Atães e Rendufe",
-    "Azurém",
-    "Barco",
-    "Briteiros (Santo Estêvão) e Donim",
-    "Briteiros (São Salvador e Santa Leocádia)",
-    "Brito",
-    "Caldelas",
-    "Candoso (São Martinho)",
-    "Candoso (São Tiago) e Mascotelos",
-    "Conde e Gandarela",
-    "Costa",
-    "Creixomil",
-    "Fermentões",
-    "Gonça",
-    "Gondar",
-    "Guardizela",
-    "Infantas",
-    "Leitões, Oleiros e Figueiredo",
-    "Longos",
-    "Lordelo",
-    "Mesão Frio",
-    "Moreira de Cónegos",
-    "Nespereira",
-    "Oliveira, São Paio e São Sebastião",
-    "Pencelo",
-    "Pinheiro",
-    "Polvoreira",
-    "Ponte",
-    "Prazins (Santa Eufémia)",
-    "Prazins (Santo Tirso) e Corvite",
-    "Ronfe",
-    "Sande (São Lourenço) e Balazar",
-    "Sande (São Martinho)",
-    "Sande (Vila Nova e São Clemente)",
-    "São Torcato",
-    "Selho (São Cristóvão)",
-    "Selho (São Jorge)",
-    "Selho (São Lourenço) e Gominhães",
-    "Serzedelo",
-    "Serzedo e Calvos",
-    "Silvares",
-    "Souto e Gondomar",
-    "Tabuadelo e São Faustino",
-    "Urgezes"
-];
-
-const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
-
-function procuraCasaPorFreguesia(freguesia) {
-
-    getID(freguesia).then(function (response) {
-        if (!response.locations[0]) throw new Error("Não foi possível pesquisar por: " + freguesia);
-
-        let i = 0;
-        while (true) {
-            if (String(response.locations[i].name).includes(distrito) && response.locations[i].locationId)
-                break;
-            else if (response.locations[i + 1]) {
-                i++;
-            } else {
-                throw new Error("Não possui localização na api: " + freguesia);
-            }
-        }
-
-        let dir = "cache/"+freguesia;
-
-        if (!fs.existsSync(dir)){
-            fs.mkdirSync(dir);
-        }
 
 
-        const nome = response.locations[i].name;
-        const id = response.locations[i].locationId;
 
-        getPropriedades(id, nome).then((data) => {
-            let dados = JSON.stringify(data);
-            fs.writeFileSync(dir+'/proprieties.json', dados);
-            console.log("Nome: " + nome + " || ID: " + id + " || Casas: " + data.total);
-        })
+const loc = ['41.142618', '-8.616362'];
+const freg = "Cedofeita, Santo Ildefonso, Sé, Miragaia, São Nicolau e Vitória";
+const dist = "Porto";
 
-    }).catch(erro => console.log(erro.message));
+function getLocalidadesProximas(localizacao, freguesia, distrito) {
+
+
 }
 
-
-async function getAll() {
-    for (let i = 0; i < freguesias.length; i++) {
-        procuraCasaPorFreguesia(freguesias[i]);
-        await delay(1000);
+if(typeof(Number.prototype.toRad) === "undefined") {
+    Number.prototype.toRad = function () {
+        return this * Math.PI / 180;
     }
-
 }
 
-getAll().then();
+function estaPerto(localizacao1,localizacao2lat,localizacao2long,distanciaMax){
+        let decimals = 2;
+        let earthRadius = 6371; // km
+        let lat1 = parseFloat(localizacao1[0]);
+        let lat2 = parseFloat(localizacao2lat);
+        let lon1 = parseFloat(localizacao1[1]);
+        let lon2 = parseFloat(localizacao2long);
+
+        let dLat = (lat2 - lat1).toRad();
+        let dLon = (lon2 - lon1).toRad();
+        lat1 = lat1.toRad();
+        lat2 = lat2.toRad();
+
+        let a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
+        let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        let d = earthRadius * c;
+
+        let distancia = Math.round(d * Math.pow(10, decimals)) / Math.pow(10, decimals);
+
+        return distancia <= distanciaMax;
+}
+
+//getLocalidadesProximas(loc,freg,dist)
+console.log(procuraCasaPorFreguesia(freg,dist).elementList
+    .filter(x => estaPerto(loc,x.latitude,x.longitude,2.5)).length);
+

@@ -1,7 +1,6 @@
 const axios = require("axios");
 const config = require("./config");
 
-
 module.exports = function getID(local) {
 
     const options = {
