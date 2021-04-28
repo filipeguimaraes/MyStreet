@@ -1,82 +1,48 @@
-const getID = require("./getID");
-const getPropriedades = require("./getPropriedades");
+const procuraCasaPorFreguesia = require("./getByFreguesia");
+const fs = require('fs');
 
 
-const freguesias = [
-    'Adaúfe',
-    'Arentim e Cunha',
-    'Maximinos, Sé e Cividade',
-    'São José de São Lázaro e São João do Souto',
-    'São Vicente',
-    "São Víctor",
-    "São Julião (Cabreiros e Passos)",
-    "Celeirós, Aveleda e Vimieiro",
-    "Crespos e Pousada",
-    "Santo Estêvão e São Vicente",
-    "Espinho",
-    "Esporões",
-    "São Pedro e São Mamede",
-    "Ferreiros e Gondizalves",
-    "Figueiredo",
-    "Gualtar",
-    "São Pedro (Guisande e Oliveira)",
-    "Lamas",
-    "Lomar e Arcos",
-    "Merelim (São Paio), Panóias e Parada de Tibães",
-    "Merelim (São Pedro) e Frossos",
-    "Mire de Tibães",
-    "Morreira e Trandeiras",
-    "Nogueira, Fraião e Lamaçães",
-    "Nogueiró e Tenões",
-    "Padim da Graça",
-    "Palmeira",
-    "Pedralva",
-    "Priscos",
-    "Real, Dume e Semelhe",
-    "Ruilhe",
-    "Santa Lucrécia de Algeriz e Navarra",
-    "Sequeira",
-    "Sobreposta",
-    "Tadim",
-    "Tebosa",
-    "Vilaça e Fradelos"
-];
 
-const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
-function procuraCasaPorFreguesia(freguesia) {
+const loc = ['41.142618', '-8.616362'];
+const freg = "Cedofeita, Santo Ildefonso, Sé, Miragaia, São Nicolau e Vitória";
+const dist = "Porto";
 
-    getID(freguesia).then(function (response) {
-        if (!response.locations[0]) throw new Error("Não foi possível pesquisar por: " + freguesia);
-        let i = 0;
-        while (true) {
-            if (String(response.locations[i].name).includes("Braga") && response.locations[i].locationId)
-                break;
-            else if (response.locations[i + 1]) {
-                i++;
-            } else {
-                throw new Error("Não possui localização na api: " + freguesia);
-            }
-        }
+function getLocalidadesProximas(localizacao, freguesia, distrito) {
 
-        const nome = response.locations[i].name;
-        const id = response.locations[i].locationId;
-        //console.log("Nome: " + nome + " || ID: " + id + " || ");
 
-        getPropriedades(id, nome).then((data) => {
-            console.log("Nome: " + nome + " || ID: " + id + " || Casas: " + data.total);
-        })
-    }).catch(erro => console.log(erro.message));
 }
 
-async function getAll() {
-    for (let i = 0; i < freguesias.length; i++) {
-        procuraCasaPorFreguesia(freguesias[i]);
-        if (i % 2) {
-            await delay(1000);
-        }
+if(typeof(Number.prototype.toRad) === "undefined") {
+    Number.prototype.toRad = function () {
+        return this * Math.PI / 180;
     }
-
 }
 
-getAll().then();
+function estaPerto(localizacao1,localizacao2lat,localizacao2long,distanciaMax){
+        let decimals = 2;
+        let earthRadius = 6371; // km
+        let lat1 = parseFloat(localizacao1[0]);
+        let lat2 = parseFloat(localizacao2lat);
+        let lon1 = parseFloat(localizacao1[1]);
+        let lon2 = parseFloat(localizacao2long);
+
+        let dLat = (lat2 - lat1).toRad();
+        let dLon = (lon2 - lon1).toRad();
+        lat1 = lat1.toRad();
+        lat2 = lat2.toRad();
+
+        let a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
+        let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        let d = earthRadius * c;
+
+        let distancia = Math.round(d * Math.pow(10, decimals)) / Math.pow(10, decimals);
+
+        return distancia <= distanciaMax;
+}
+
+//getLocalidadesProximas(loc,freg,dist)
+console.log(procuraCasaPorFreguesia(freg,dist).elementList
+    .filter(x => estaPerto(loc,x.latitude,x.longitude,2.5)).length);
+
