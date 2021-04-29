@@ -10,6 +10,8 @@ module.exports = function getLocation(postcode) {
 
     console.log(request)
     
-    return axios.get(request).then( response => response.data);
+    return axios.get(request).then( response => response.data)
+                                .catch(() => Promise.reject(new Error("Não foi possível encontrar: " + postcode)));
+
 
 }
