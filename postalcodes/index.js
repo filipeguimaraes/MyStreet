@@ -19,15 +19,20 @@ async function getLocations(postcode) {
 function freguesias(distrito){
     var file = []
     csv({ separator: ';' });
-    fs.createReadStream('../ListaFreguesiasVigentes.csv')
+    fs.createReadStream('../ListaFreguesias.csv')
     .pipe(csv())
     .on('data', (row) => {
-        //file.push(row)
-        console.log(row);
+        if(row["Descritivo Distrito"].includes(distrito)){
+            console.log(row["Descritivo abreviado da Freguesia"])
+            file.push(row["Descritivo abreviado da Freguesia"])
+        }
     })
     .on('end', () => {
-        console.log('CSV file successfully processed');
+        console.log('CSV file successfully processed')
     });
+
+    console.log(file)
+    return file
 }
 
 getLocations('4350-010').then();
