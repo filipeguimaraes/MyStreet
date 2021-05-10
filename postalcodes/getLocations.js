@@ -8,9 +8,12 @@ module.exports = function getLocation(postcode) {
 
     /*https://api.mapbox.com/geocoding/v5/mapbox.places/4760-143.json?access_token=pk.eyJ1IjoibWFyaWFtaWd1ZWwiLCJhIjoiY2tuYWc4eHlvMWhkajJubzZuMHFwazhhMyJ9.J1u7e0aA8a8_KLvUF9b8XA*/
 
-    console.log(request)
-    
-    return axios.get(request).then( response => response.data)
+
+
+    return axios.get(request).then( response => {
+        console.log(response.data.features[0]);
+        response.data
+    })
                                 .catch(() => Promise.reject(new Error("Não foi possível encontrar: " + postcode)));
 
 

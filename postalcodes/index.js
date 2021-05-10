@@ -30,5 +30,5 @@ function freguesias(distrito){
     });
 }
 
-getLocations('4350-010')
-freguesias('PORTO')
+getLocations('4350-010').then();
+//freguesias('PORTO')

@@ -1,5 +1,5 @@
-const getID = require("./getID");
-const getPropriedades = require("./getPropriedades");
+const getID = require("./functions/getID");
+const getPropriedades = require("./functions/getPropriedades");
 const fs = require('fs');
 
 let distrito = "Porto";
