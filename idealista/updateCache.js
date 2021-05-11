@@ -1,17 +1,8 @@
 const getID = require("./functions/getID");
 const getPropriedades = require("./functions/getPropriedades");
 const fs = require('fs');
+const getLocal = require('./postalcodes/index');
 
-let distrito = "Porto";
-const freguesias = [
-    "Aldoar, Foz do Douro e Nevogilde",
-    "Bonfim",
-    "Campanhã",
-    "Cedofeita, Santo Ildefonso, Sé, Miragaia, São Nicolau e Vitória",
-    "Lordelo do Ouro e Massarelos",
-    "Paranhos",
-    "Ramalde"
-];
 
 function apiCasaPorFreguesia(freguesia, distrito) {
     let dir1 = "cache/" + distrito;
@@ -54,19 +45,20 @@ function apiCasaPorFreguesia(freguesia, distrito) {
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 
-async function getAll() {
-    for (let i = 0; i < freguesias.length; i++) {
-        let dir = "cache/" + distrito + "/" + freguesias[i] + "/proprieties.json";
-        if (!fs.existsSync(dir)) {
-            console.log("Searching in API for " + freguesias[i]);
-            apiCasaPorFreguesia(freguesias[i], distrito);
-            await delay(1000);
-        } else {
-            console.log("In cache: " + freguesias[i]);
+async function getAll(postcode) {
+    getLocal(postcode).then(async (local) => {
+        for (let i = 0; i < local.freguesias.length; i++) {
+            let dir = "cache/" + local.distrito + "/" + local.freguesias[i] + "/proprieties.json";
+            if (!fs.existsSync(dir)) {
+                console.log("Searching in API for " + local.freguesias[i]);
+                apiCasaPorFreguesia(local.freguesias[i], local.distrito);
+                await delay(1000);
+            } else {
+                console.log("In cache: " + local.freguesias[i]);
+            }
         }
-    }
-
+    });
 }
 
 
-getAll().then();
+getAll('4350-010').then();

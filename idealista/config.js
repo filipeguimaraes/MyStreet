@@ -1,5 +1,5 @@
 const config = {
-    xrapidapikey : 'e7360c1ademsh709aec2718700e1p17f92ejsn9f107cff8d83'
+    xrapidapikey : 'adcc708a79msh57a765b42ca1263p1d3810jsn77dd7e3c58ae'
 }
 
 module.exports = config;
