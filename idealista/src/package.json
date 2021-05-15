@@ -1,0 +1,17 @@
+{
+  "name": "idealista",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "run": "node index.js",
+    "updateCache": "node updateCache.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "axios": "^0.21.1",
+    "csv-parser": "^3.0.0"
+  }
+}
