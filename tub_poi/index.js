@@ -112,7 +112,7 @@ finalStations().then(stations => {
         array.sort((a, b) => {
             return b.relations.length - a.relations.length;
         });
-        console.log(array);
+        console.log(array.slice(0,10));
     } );
 });
 
