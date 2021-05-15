@@ -1,7 +1,7 @@
 const http = require("http");
-
+const render = require("./src/page");
 const host = 'localhost';
-const port = 8000;
+const port = 8080;
 
 
 const requestListener = function (req, res) {
@@ -9,7 +9,9 @@ const requestListener = function (req, res) {
     console.log("Receive PostCode: "+postCode);
     //res.setHeader("Content-Type", "text/html");
     res.writeHead(200);
-    res.end("My first server!");
+    render(postCode).then(data => {
+        res.end(data);
+    })
 };
 
 const server = http.createServer(requestListener);

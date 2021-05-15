@@ -6,7 +6,7 @@ const getNumeroQuartos = require("./functions/getNumeroQuartos");
 const getRanking = require("./functions/getRanking");
 const getLocal = require('./postalcodes/index');
 
-function getMetricas(postcode) {
+module.exports = function getMetricas(postcode) {
     return getLocal(postcode).then(local => {
         let stuff = {
             mediaConcelho: 0,
@@ -40,5 +40,3 @@ function getMetricas(postcode) {
          */
     });
 }
-
-getMetricas('4150-644').then(console.log);
