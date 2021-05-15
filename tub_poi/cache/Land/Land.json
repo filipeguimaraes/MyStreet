@@ -1,0 +1,49 @@
+[
+    {
+      "type": "node",
+      "id": 1403538447,
+      "lat": 41.1833264,
+      "lon": -8.6006009,
+      "tags": {
+        "bus": "yes",
+        "highway": "bus_stop",
+        "local_ref": "HSJ12",
+        "name": "Hospital São João",
+        "public_transport": "platform",
+        "ref": "HSJ12",
+        "shelter": "yes"
+      }
+    },
+    {
+      "type": "node",
+      "id": 2169103450,
+      "lat": 41.1831682,
+      "lon": -8.6000192,
+      "tags": {
+        "bus": "yes",
+        "highway": "bus_stop",
+        "local_ref": "HSJ11",
+        "name": "Hospital São João",
+        "operator": "STCP",
+        "public_transport": "platform",
+        "ref": "HSJ11",
+        "shelter": "yes"
+      }
+    },
+    {
+      "type": "node",
+      "id": 2169103454,
+      "lat": 41.1831682,
+      "lon": -8.6000192,
+      "tags": {
+        "bus": "yes",
+        "highway": "bus_stop",
+        "local_ref": "HSJ11",
+        "name": "Hospital São João",
+        "operator": "STCP",
+        "public_transport": "platform",
+        "ref": "HSJ11",
+        "shelter": "yes"
+      }
+    }
+]

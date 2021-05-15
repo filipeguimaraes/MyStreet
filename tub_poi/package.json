@@ -4,12 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "run": "node index.js"
+    "run_poi": "node index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "csv-parser": "^3.0.0"
+    "@derhuerst/query-overpass": "^2.0.0",
+    "csv-parser": "^3.0.0",
+    "axios": "^0.21.1"
   }
 }
