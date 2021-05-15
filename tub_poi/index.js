@@ -108,7 +108,12 @@ async function getRelations(stations) {
 }
 
 finalStations().then(stations => {
-    getRelations(stations).then(console.log);
+    getRelations(stations).then(array => {
+        array.sort((a, b) => {
+            return b.relations.length - a.relations.length;
+        });
+        console.log(array);
+    } );
 });
 
 //getRelations().then(console.log);
