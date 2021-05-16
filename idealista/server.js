@@ -5,13 +5,18 @@ const port = 8080;
 
 
 const requestListener = function (req, res) {
-    const postCode = req.url.substring(req.url.indexOf("=")+1);
-    console.log("Receive PostCode: "+postCode);
+    const postCode = req.url.substring(req.url.indexOf("=") + 1);
+    console.log("Receive PostCode: " + postCode);
     //res.setHeader("Content-Type", "text/html");
     res.writeHead(200);
-    render(postCode).then(data => {
-        res.end(data);
-    })
+    try {
+        render(postCode).then(data => {
+            res.end(data);
+        }).catch(res.end("Something went wrong!"));
+    } catch {
+        res.end("Something went wrong!");
+        console.log("Something went wrong!");
+    }
 };
 
 const server = http.createServer(requestListener);

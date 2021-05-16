@@ -12,15 +12,14 @@ async function getLocations(postcode) {
                 freguesia: response.context[0].text,
                 distrito: response.context[1].text
             };
-        })
-        .catch(console.log);
+        });
 }
 
 //Distrito all caps
 async function freguesias(distrito) {
     return new Promise((resolve, reject) => {
         const file = [];
-        csv({separator: ';'});
+        csv({ separator: ';' });
         return fs.createReadStream('ListaFreguesias.csv')
             .pipe(csv())
             .on('data', (row) => {
@@ -49,8 +48,11 @@ module.exports = async function getLocal(postcode) {
             params.localizacao = fregdist.localizacao;
             freguesias(fregdist.distrito).then(fregs => {
                 params.freguesias = fregs;
-                for (let i = 0; i < fregs.length; i++){
-                    if (fregs[i].includes(params.freguesia.toLocaleLowerCase())){
+                if (params.freguesia.includes("santo")) {
+                    params.freguesia = params.freguesia.split(" ")[1];
+                }
+                for (let i = 0; i < fregs.length; i++) {
+                    if (fregs[i].includes(params.freguesia.toLocaleLowerCase())) {
                         params.freguesia = fregs[i];
                         break;
                     }
