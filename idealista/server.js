@@ -1,6 +1,7 @@
 const http = require("http");
+const { compileFunction } = require("vm");
 const render = require("./src/page");
-const host = 'localhost';
+const host = '0.0.0.0';
 const port = 8000;
 
 
@@ -12,9 +13,8 @@ const requestListener = function (req, res) {
     try {
         render(postCode).then(data => {
             res.end(data);
-        }).catch(res.end("Something went wrong!"));
+        }).catch(console.log);
     } catch {
-        res.end("Something went wrong!");
         console.log("Something went wrong!");
     }
 };
