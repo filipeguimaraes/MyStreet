@@ -1,7 +1,7 @@
 const http = require("http");
 const render = require("./src/page");
 const host = 'localhost';
-const port = 8080;
+const port = 8000;
 
 
 const requestListener = function (req, res) {
