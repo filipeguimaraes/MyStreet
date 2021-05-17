@@ -4,7 +4,7 @@ module.exports = async function render(postalcode) {
     return new Promise((resolve, reject) => {
         getMetricas(postalcode).then(data => {
 
-        const local = Number.isNaN(data.mediaLocal) ? "Sem dados 😔" : data.mediaLocal+'€';
+        const local = Number.isNaN(data.mediaLocal) ? "Sem dados 😔" : data.mediaLocal.toFixed(2)+'€';
             resolve(`
         <div>
         <head>
@@ -50,7 +50,7 @@ module.exports = async function render(postalcode) {
                 <div class="grid-item">
                     <div class="card">
                         <div class="container">
-                            <h4><b>`+ data.mediaConcelho + `€</b></h4>
+                            <h4><b>`+ data.mediaConcelho.toFixed(2) + `€</b></h4>
                             <p>Preço médio no concelho.</p>
                         </div>
                     </div>
@@ -59,7 +59,7 @@ module.exports = async function render(postalcode) {
                 <div class="grid-item">
                     <div class="card">
                         <div class="container">
-                            <h4><b>`+ data.mediaFreguesia + `€</b></h4>
+                            <h4><b>`+ data.mediaFreguesia.toFixed(2) + `€</b></h4>
                             <p>Preço médio na freguesia.</p>
                         </div>
                     </div>
@@ -86,7 +86,7 @@ module.exports = async function render(postalcode) {
                 <div class="grid-item">
                     <div class="card">
                         <div class="container">
-                            <h4><b>`+ data.tamanhoMedio + `m²</b></h4>
+                            <h4><b>`+ data.tamanhoMedio.toFixed(2) + `m²</b></h4>
                             <p>Tamanho médio.</p>
                         </div>
                     </div>
@@ -95,7 +95,7 @@ module.exports = async function render(postalcode) {
                 <div class="grid-item">
                     <div class="card">
                         <div class="container">
-                            <p><b>`+ data.range[0] + `€ - ` + data.range[1] + `€</b></p>
+                            <p><b>`+ data.range[0].toFixed(2) + `€ - ` + data.range[1].toFixed(2) + `€</b></p>
                             <p>Variação do preço de casas.</p>
                         </div>
                     </div>
