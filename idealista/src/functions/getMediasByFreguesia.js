@@ -8,9 +8,9 @@ if (typeof (Number.prototype.toRad) === "undefined") {
 function estaPerto(localizacao1, localizacao2lat, localizacao2long, distanciaMax) {
     let decimals = 2;
     let earthRadius = 6371; // km
-    let lat1 = parseFloat(localizacao1[0]);
+    let lat1 = parseFloat(localizacao1[1]);
     let lat2 = parseFloat(localizacao2lat);
-    let lon1 = parseFloat(localizacao1[1]);
+    let lon1 = parseFloat(localizacao1[0]);
     let lon2 = parseFloat(localizacao2long);
 
     let dLat = (lat2 - lat1).toRad();
