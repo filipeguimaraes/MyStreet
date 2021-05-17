@@ -4,7 +4,7 @@ module.exports = async function render(postalcode) {
     return new Promise((resolve, reject) => {
         getMetricas(postalcode).then(data => {
 
-        const local = Number.isNaN(data.mediaLocal) ? "Sem dados 😔" : data.mediaLocal.toString+'€';
+        const local = Number.isNaN(data.mediaLocal) ? "Sem dados 😔" : data.mediaLocal+'€';
             resolve(`
         <div>
         <head>
