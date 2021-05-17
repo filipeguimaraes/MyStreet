@@ -9,6 +9,7 @@ const requestListener = function (req, res) {
     const postCode = req.url.substring(req.url.indexOf("=") + 1);
     console.log("Receive PostCode: " + postCode);
     //res.setHeader("Content-Type", "text/html");
+    res.setHeader("Content-Type", "text/html; charset=utf-8");
     res.writeHead(200);
     try {
         render(postCode).then(data => {
