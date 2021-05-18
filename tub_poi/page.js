@@ -2,34 +2,63 @@ const getPointsInterest = require('./index');
 const getDistanceTime = require('./getDistanceTime')
 const getLocation = require('./postalcodes/getLocations')
 
-module.exports = async function render(postalcode) {
+async function aux(postalcode,location) {
+
     return new Promise((resolve, reject) => {
         getPointsInterest(postalcode).then(data => {
-
             let array = [];
-            for(let i=0; i < data.length; i++){
+            let finish = 0;
+            for (let i = 0; i < data.length; i++) {
+
                 let entry = {
-                    name:'',
-                    string:'',
+                    name: '',
+                    string: '',
                 }
-                if(data.station !== undefined){
-                    getDistanceTime("driving-traffic",data.poi.lat + ',' + data.poi.lon +';'+ data.station.lat + ',' + data.station.lon).then(time => {
-                        entry.name = data.poi.name;
-                        entry.string = 'Paragem mais próxima: ' + data.station.name + '\n Tempo de viagem: ' + time.duration + '\n Distância: ' + time.distance+ '\n';
+                entry.name = data[i].poi.name;
+                if (data[i].station) {
+                    getDistanceTime("driving-traffic", data[i].poi.lon + ',' + data[i].poi.lat + ';' + data[i].station.lon + ',' + data[i].station.lat).then(time => {
+                        entry.string = 'Paragem mais próxima:</p><b> ' + data[i].station.name + '</b>\n <p> Tempo de viagem: <b>' + Math.round(time.duration/60) + 'min</b></p> \n<p> Distância: <b>' + (time.distance/1000).toFixed(2) + "km</b>\n";
+                        array.push(entry)
+                        finish++;
+                        if (finish === data.length){
+                            resolve(array);
+                        }
+                    }).catch(e => {
+                        console.log(e.message)
+                        array.push(entry);
+                        finish++;
+                        if (finish === data.length){
+                            resolve(array);
+                        }
                     });
-                }else{
-
-                    getLocation(postcode).then(location => {
-                        getDistanceTime("walking",data.poi.lat + ',' + data.poi.lon +';'+ location.localizacao[1] + ',' + location.localizacao[0] ).then(time => {
-                            entry.name = data.poi.name;
-                            entry.string = 'Não existem paragens nas proximidades. \n Distância: ' + time.distance ;
-                        });
+                } else {
+                    getDistanceTime("walking", data[i].poi.lon + ',' + data[i].poi.lat + ';' + location.center[0] + ',' + location.center[1]).then(time => {
+                        entry.string = 'Não existem paragens próximas.</p>'+'<p>Fica a <b>'+(time.distance/1000).toFixed(2)+'km </b>de onde se encontra.';
+                        array.push(entry);
+                        finish++;
+                        if (finish === data.length){
+                            resolve(array);
+                        }
+                    }).catch(e => {
+                        console.log(e.message)
+                        array.push(entry);
+                        finish++;
+                        if (finish === data.length){
+                            resolve(array);
+                        }
                     });
                 }
-                array.push(entry)
             }
+        });
+    });
+}
 
-            resolve(`
+
+module.exports = function render(postalcode) {
+    return new Promise((resolve, reject) => {
+        getLocation(postalcode).then(location => {
+            aux(postalcode,location).then(array => {
+                resolve(`
 <div>        
     <head>
     <style>
@@ -75,8 +104,8 @@ module.exports = async function render(postalcode) {
         <div class="grid-item">
             <div class="card">
                 <div class="container">
-                    <h4><b>`+array[0].name+`</b></h4>
-                    <p>`+array[0].string+`<p>
+                    <h2><b>` + array[0].name + `</b></h2>
+                    <p>` + array[0].string + `<p>
                 </div>
             </div>
         </div>
@@ -84,8 +113,8 @@ module.exports = async function render(postalcode) {
         <div class="grid-item">
             <div class="card">
                 <div class="container">
-                    <h4><b>`+array[1].name+`</b></h4>
-                    <p>`+array[1].string+`<p>
+                    <h2><b>` + array[1].name + `</b></h2>
+                    <p>` + array[1].string + `<p>
                 </div>
             </div>
         </div>
@@ -93,8 +122,8 @@ module.exports = async function render(postalcode) {
         <div class="grid-item">
             <div class="card">
                 <div class="container">
-                    <h4><b>`+array[2].name+`</b></h4>
-                    <p>`+array[2].string+`<p>
+                    <h2><b>` + array[2].name + `</b></h2>
+                    <p>` + array[2].string + `<p>
                 </div>
             </div>
         </div>
@@ -102,8 +131,8 @@ module.exports = async function render(postalcode) {
         <div class="grid-item">
             <div class="card">
                 <div class="container">
-                    <h4><b>`+array[3].name+`</b></h4>
-                    <p>`+array[3].string+`<p>
+                    <h2><b>` + array[3].name + `</b></h2>
+                    <p>` + array[3].string + `<p>
                 </div>
             </div>
         </div>
@@ -111,8 +140,8 @@ module.exports = async function render(postalcode) {
         <div class="grid-item">
             <div class="card">
                 <div class="container">
-                    <h4><b>`+array[4].name+`</b></h4>
-                    <p>`+array[4].string+`<p>
+                    <h2><b>` + array[4].name + `</b></h2>
+                    <p>` + array[4].string + `<p>
                 </div>
             </div>
         </div>
@@ -120,8 +149,8 @@ module.exports = async function render(postalcode) {
         <div class="grid-item">
             <div class="card">
                 <div class="container">
-                    <h4><b>`+array[5].name+`</b></h4>
-                    <p>`+array[5].string+`<p>
+                    <h2><b>` + array[5].name + `</b></h2>
+                    <p>` + array[5].string + `<p>
                 </div>
             </div>
         </div>
@@ -129,8 +158,8 @@ module.exports = async function render(postalcode) {
         <div class="grid-item">
             <div class="card">
                 <div class="container">
-                    <h4><b>`+array[6].name+`</b></h4>
-                    <p>`+array[6].string+`<p>
+                    <h2><b>` + array[6].name  + `</b></h2>
+                    <p>` + array[6].string + `<p>
                 </div>
             </div>
         </div>
@@ -138,8 +167,8 @@ module.exports = async function render(postalcode) {
         <div class="grid-item">
             <div class="card">
                 <div class="container">
-                    <h4><b>`+array[7].name+`</b></h4>
-                    <p>`+array[7].string+`<p>
+                    <h2><b>` + array[7].name + `</b></h2>
+                    <p>` + array[7].string + `<p>
                 </div>
             </div>
         </div>
@@ -147,8 +176,8 @@ module.exports = async function render(postalcode) {
         <div class="grid-item">
             <div class="card">
                 <div class="container">
-                    <h4><b>`+array[8].name+`</b></h4>
-                    <p>`+array[8].string+`<p>
+                    <h2><b>` + array[8].name + `</b></h2>
+                    <p>` + array[8].string + `<p>
                 </div>
             </div>
         </div>
@@ -157,7 +186,11 @@ module.exports = async function render(postalcode) {
 </body>
 </div>
         `);
+
+
+            });
         });
+
     });
 }
 
