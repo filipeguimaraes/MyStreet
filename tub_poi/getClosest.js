@@ -7,9 +7,9 @@ if (typeof (Number.prototype.toRad) === "undefined") {
 module.exports = function getDist(location, stationLat, stationLon) {
     let decimals = 2;
     let earthRadius = 6371; // km
-    let lat1 = parseFloat(location[0]);
+    let lat1 = parseFloat(location[1]);
     let lat2 = parseFloat(stationLat);
-    let lon1 = parseFloat(location[1]);
+    let lon1 = parseFloat(location[0]);
     let lon2 = parseFloat(stationLon);
 
     let dLat = (lat2 - lat1).toRad();

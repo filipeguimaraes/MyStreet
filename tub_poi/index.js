@@ -1,8 +1,9 @@
 const getRoutes = require("./getRoutes");
 const getStations = require("./getStations");
+const getDistance = require("./getClosest");
+const getLocation = require("./postalcodes/index")
 const fs = require('fs');
 const city = 'Porto'
-const getDistance = require("./getClosest");
 
 /*
     Method that retrieves information from the Overpass API and stores it in the cache directory.
@@ -36,8 +37,6 @@ function getsData(city) {
     Argument: city
     Method that reads through the stations file and retrieves all the essential information
     about the station and writes it into a new file.
-    ATTENTION ERROR: Ao escrever o ficheiro vai ser acrescentada um virgula a mais no final.
-                     Arranjar isso depois.
  */
 async function finalStations() {
     return new Promise((resolve, reject) => {
@@ -51,7 +50,7 @@ async function finalStations() {
 
                 let result = [];
                 for (const elem in objData) {
-                    if( objData[elem].tags.name !== ''){
+                    if(objData[elem].tags.hasOwnProperty('name')){
                         let dados = {
                             id: objData[elem].id,
                             lat: objData[elem].lat,
@@ -126,13 +125,73 @@ async function getRelations(location) {
     });
 }
 
+function getPOIFile(city, list){
+   return new Promise((resolve, reject) => {
 
-getRelations([41.60010974004648, -8.394646615883023]).then(array => {
-    array.sort((a, b) => {
-        return b.relations.length - a.relations.length;
+       let poisList;
+
+       let dir = "cache/" + city + "/pois.json";
+       if (fs.existsSync(dir)) {
+           fs.readFile(dir, 'utf8' , (err, poisString) => {
+               if (err) {
+                   console.error(err)
+                   return;
+               }
+               poisList = JSON.parse(poisString);
+               resolve(poisList);
+           })
+       }else {
+           //sort list by length
+           poisList = list.sort((a, b) => {
+               return b.relations.length - a.relations.length;
+           });
+
+           let pointsOfInterest = JSON.stringify(poisList.slice(0,9));
+           fs.writeFileSync(dir, pointsOfInterest);
+           resolve(poisList);
+       }
+   })
+}
+
+
+let porto = '4000-291'
+let porto2= '4200-319'
+function getPOI(postcode){
+
+    return new Promise(resolve => {
+        getLocation(postcode).then(location => {
+            console.log(location)
+            getRelations(location.localizacao).then(array => {
+
+                //Get all by distance
+                let filteredDist = array.sort((a, b) => {
+                    return a.dist - b.dist;
+                }).filter(function(x) {
+                    return x.relations.length !== 0
+                }).slice(0,20);
+
+                getPOIFile(location.distrito, filteredDist).then( poisList => {
+                    let result = [];
+                    for(let i =0; i < poisList.length; i++){
+                        let entry = { poi: poisList[i], station: undefined};
+                        for(let j =0; j < filteredDist.length; j++){
+                            const filteredArray = poisList[i].relations.filter(value => filteredDist[j].relations.includes(value));
+                            if(filteredArray.length !== 0){
+                                entry.station = filteredDist[j];
+                                break;
+                            }
+                        }
+                        result.push(entry);
+                    }
+                    resolve(result);
+                });
+            });
+        })
     });
-    console.log(array.slice(0, 10));
-});
+}
+
+getPOI(porto2).then(console.log)
+
 
 
 
