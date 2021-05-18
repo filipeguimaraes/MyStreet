@@ -1,7 +1,7 @@
 const http = require("http");
 const { compileFunction } = require("vm");
 const render = require("./page");
-const host = 'localhost';
+const host = '0.0.0.0';
 const port = 7000;
 
 
