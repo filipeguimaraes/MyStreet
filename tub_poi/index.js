@@ -154,13 +154,13 @@ function getPOIFile(city, list){
 }
 
 
-let porto = '4000-291'
-let porto2= '4200-319'
-function getPOI(postcode){
+//let porto = '4000-291'
+//let porto2= '4200-319'
+module.exports = function getPOI(postcode){
 
     return new Promise(resolve => {
         getLocation(postcode).then(location => {
-            console.log(location)
+
             getRelations(location.localizacao).then(array => {
 
                 //Get all by distance
@@ -189,8 +189,6 @@ function getPOI(postcode){
         })
     });
 }
-
-getPOI(porto2).then(console.log)
 
 
 
